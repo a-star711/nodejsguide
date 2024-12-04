@@ -1,24 +1,19 @@
 const express = require('express')
 const app = express();
 
-const { people } = require('./data.js')
+const peopleRouter = require('./routes/people');
+const auth = require('./routes/auth')
 
 // static 
 app.use(express.static('./methods-public'))
 // parse form data
 app.use(express.urlencoded({extended: false}))
+app.use(express.json())
 
-app.get('/api/people', (req, res) => {
-  res.status(200).json({success:true, data: people})
-})
+app.use('/api/people', peopleRouter)
+app.use('/login', auth)
 
-app.post('/login', (req, res) => {
-  const {name} = req.body;
-  if(name){
-    return res.status(200).send(`Welcome ${name}`)
-  }
-res.status(401).send('Please provide a credential')
-})
+
 
 app.listen(5000, () => {
   console.log('Server is listening on Port 5000..')
